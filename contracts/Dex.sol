@@ -22,6 +22,11 @@ contract Dex {
         _;
     }
 
+    modifier tokenExists(bytes32 ticker) {
+        require(tokens[ticker] != address(0), "DEX: Unsupported token");
+        _;
+    }
+
     function deposit(uint256 amount, bytes32 ticker) external {
         IERC20(tokens[ticker].tokenAddress).transferFrom(msg.sender, address(this), amount);
         traderBalances[msg.sender][ticker] += amount;
