@@ -27,9 +27,15 @@ contract Dex {
         _;
     }
 
-    function deposit(uint256 amount, bytes32 ticker) external {
+    function deposit(uint256 amount, bytes32 ticker) external tokenExists(ticker) {
         IERC20(tokens[ticker].tokenAddress).transferFrom(msg.sender, address(this), amount);
         traderBalances[msg.sender][ticker] += amount;
+    }
+
+    function withdraw(uint256 amount, bytes32 ticker) external tokenExists(ticker) {
+        require(traderBalances[msg.sender][ticker] >= amount, "DEX: insufficient balance");
+        IERC20(tokens[ticker].tokenAddress).transfer(msg.sender, amount);
+        traderBalances[msg.sender][ticker] -= amount;
     }
 
     function addToken(bytes32 ticker, address tokenAddress) external onlyAdmin {
