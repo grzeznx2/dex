@@ -13,4 +13,14 @@ contract Dex {
     constructor(){
         admin = msg.sender;
     }
+
+    modifier onlyAdmin() {
+        require(msg.sender == admin, "DEX: Only admin can perform this action");
+        _;
+    }
+
+    function addToken(bytes32 ticker, address tokenAddress) external onlyAdmin {
+        tokens[ticker] = Token(ticker, tokenAddress);
+        tokenList.push(ticker);
+    }
 }
