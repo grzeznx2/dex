@@ -23,10 +23,12 @@ contract Dex {
         bytes32 ticker;
         address tokenAddress;
     }
+    mapping(bytes32 => mapping(uint256 => Order[])) public orderBook;
     mapping(address => mapping(bytes32 => uint256)) public traderBalances;
     mapping(bytes32 => Token) public tokens;
     bytes32[] public tokenList;
     address public admin;
+    uint256 public nextOrderId;
 
     constructor(){
         admin = msg.sender;
@@ -56,5 +58,14 @@ contract Dex {
     function addToken(bytes32 ticker, address tokenAddress) external onlyAdmin {
         tokens[ticker] = Token(ticker, tokenAddress);
         tokenList.push(ticker);
+    }
+
+    function createLimitOrder(bytes32 ticker, uint256 amount, uint256 price,  Side side) external tokenExists(ticker){
+        require(ticker != bytes32("DAI", "Dex: Cannot trade DAI"));
+        if(side == Side.SELL){
+            require(tokenBalances[msg.sender][ticker] >= amount, "DEX: Token balance too low");
+        }else {
+            require(tokenBalances[msg.sender][bytes32("DAI")] >= amount * price, "DEX: DAI balance too lowe");
+        }
     }
 }
