@@ -4,6 +4,21 @@ pragma solidity >=0.4.22 <0.9.0;
 import "@openzeppelin/contracts/token/IERC20/IERC20.sol";
 
 contract Dex {
+    enum Side {
+        BUY,
+        SELL
+    }
+
+    struct Order {
+        uint256 id;
+        Side side;
+        uint256 ticker;
+        uint256 amount;
+        uint256 filled;
+        uint256 price;
+        uint256 date;
+    }
+
     struct Token {
         bytes32 ticker;
         address tokenAddress;
