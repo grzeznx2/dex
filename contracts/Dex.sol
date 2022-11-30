@@ -68,5 +68,33 @@ contract Dex {
         }else {
             require(tokenBalances[msg.sender][DAI] >= amount * price, "DEX: DAI balance too lowe");
         }
+
+        Order[] storage orders = orderBook[ticker][uint256(side)];
+        orders.push(Order(
+            nextOrderId,
+            side,
+            ticker,
+            amount,
+            0,
+            price,
+            now
+        ));
+
+        uint i = orders.length - 1;
+        while( i > 0){
+            if(side == Side.BUY && orders[i - 1].price > orders[i].price ){
+                break;
+            }
+            if(side == Side.SELL && orders[i - 1].price < orders[i].price ){
+                break;
+            }
+
+            Order memory order = orders[i];
+            orders[i - 1] = orders[i];
+            orders[i] = order;
+            i--;
+        }
+
+        nextOrderId++;
     }
 }
