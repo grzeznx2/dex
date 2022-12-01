@@ -30,6 +30,16 @@ contract Dex {
     address public admin;
     uint256 public nextOrderId;
     bytes32 constant DAI = bytes32("DAI");
+    event NewTrade (
+        uint256 tradeId,
+        uint256 orderId,
+        bytes32 indexed ticker,
+        address indexed trader1,
+        address indexed trader2,
+        uint256 amount,
+        uint256 price,
+        uint256 date,
+    )
 
     constructor(){
         admin = msg.sender;
