@@ -29,6 +29,7 @@ contract Dex {
     bytes32[] public tokenList;
     address public admin;
     uint256 public nextOrderId;
+    uint256 public nextOTradeId;
     bytes32 constant DAI = bytes32("DAI");
     event NewTrade (
         uint256 tradeId,
@@ -52,6 +53,11 @@ contract Dex {
 
     modifier tokenExists(bytes32 ticker) {
         require(tokens[ticker] != address(0), "DEX: Unsupported token");
+        _;
+    }
+
+    modifier tokenIsNotDai(bytes32 ticker) {
+        require(ticker != 'DAI', "DEX: Cannot trade DAI"),
         _;
     }
 
