@@ -39,8 +39,8 @@ contract Dex {
         address indexed trader2,
         uint256 amount,
         uint256 price,
-        uint256 date,
-    )
+        uint256 date
+    );
 
     constructor(){
         admin = msg.sender;
@@ -57,7 +57,7 @@ contract Dex {
     }
 
     modifier tokenIsNotDai(bytes32 ticker) {
-        require(ticker != 'DAI', "DEX: Cannot trade DAI"),
+        require(ticker != 'DAI', "DEX: Cannot trade DAI");
         _;
     }
 
@@ -77,8 +77,7 @@ contract Dex {
         tokenList.push(ticker);
     }
 
-    function createLimitOrder(bytes32 ticker, uint256 amount, uint256 price,  Side side) external tokenExists(ticker){
-        require(ticker != DAI, "Dex: Cannot trade DAI");
+    function createLimitOrder(bytes32 ticker, uint256 amount, uint256 price,  Side side) external tokenExists(ticker) tokenIsNotDai(ticker){
         if(side == Side.SELL){
             require(tokenBalances[msg.sender][ticker] >= amount, "DEX: Token balance too low");
         }else {
@@ -113,4 +112,6 @@ contract Dex {
 
         nextOrderId++;
     }
+
+    function createMarketOrder(bytes32 ticker, uint256 amount, Side side) external tokenExists(ticker) tokenIsNotDai(ticker) {}
 }
